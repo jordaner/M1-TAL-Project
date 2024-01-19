@@ -26,7 +26,10 @@ class Vectors():
         """
         Returns the vector representation for word
         """
-        return self.vectors[word]
+        if word in self.vectors:
+            return self.vectors[word]
+        else:
+            return None
 
     def vocabulary(self):
         """
@@ -36,6 +39,15 @@ class Vectors():
 
     def size(self):
         return len(self.vectors)
+
+    def dimension(self):
+        """
+        Returns the dimension of the vectors
+        """
+        for word in self.vectors:
+            return len(self.vectors[word])
+
+        return 0
 
     def __getitem__(self, word):
         """
@@ -48,44 +60,6 @@ class Vectors():
         Sets the vector representation for word
         """
         self.vectors[word] = vector
-
-
-def make_vectors(vectors_filepath):
-    """
-    Returns a dictionary {string:np.array} containing the words and their corresponding 
-    vector representations.
-    """
-    vectors = {}
-    with open(vectors_filepath, 'r') as file:
-        # Skip first line as it does not contain word vector information
-        next(file)
-        with Halo(text=f"Reading vector data from {vectors_filepath}", spinner='dots') as spinner:
-            for line in file:
-                split_line = line.split()
-                word = split_line[0]
-                vec = split_line[1:]
-                if word not in vectors:
-                    vectors[word] = np.array([float(x) for x in vec])
-                else:
-                    print(f"ERROR : Duplicate vector for word {word}")
-        spinner.succeed(f"Finished reading vector data from {vectors_filepath}")
-    return vectors
-
-def make_new_vectors(old_vectors):
-    # Make new vecs for algorithm, only interested in those vectors that have synonyms 
-    # (Maybe even only those that have AT LEAST one with synonym with AT LEAST one
-    # vector representation) otherwise no operations will be performed by the algorithm 
-    # (hence no improvement can be expected). Although we could end up with a synonym 
-    # that has no synonyms not being added when in reality we want it.
-    # TODO Come back to this:
-    """for word in old_vectors:
-        if word in syns:
-            for synonym in syns[word]:
-                if synonym in old_vectors:
-                    new_vecs[word] = np.array(old_vectors[word])"""
-    pass
-
-
 
 def cosine_similarity(vector_a, vector_b):
     return np.dot(vector_a, vector_b) / (np.linalg.norm(vector_a) * np.linalg.norm(vector_a))

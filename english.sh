@@ -1,0 +1,1 @@
+python3 main.py -v data/Embeddings/vectors_datatxt_250_sg_w10_i5_c500_gensim_clean -l data/Lexical_info/ppdb-2.0-s-lexical -t data/Evaluation/ws353.txt
